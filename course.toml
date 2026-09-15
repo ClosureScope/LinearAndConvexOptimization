@@ -1,3 +1,3 @@
-name_en = "Course Name"
-name_zh = "课程中文名"
-code    = "COURSE0000"
+name_en = "Linear and Convex Optimization"
+name_zh = "线性优化与凸优化"
+code    = "CS2601"
