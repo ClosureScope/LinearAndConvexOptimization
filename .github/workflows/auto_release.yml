@@ -1,0 +1,13 @@
+name: Auto-Compile and Release PDF
+
+# 全部逻辑在 ClosureScope/NotesCI 里维护，此文件无需修改。
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    uses: ClosureScope/NotesCI/.github/workflows/typst-release.yml@main
+    permissions:
+      contents: write
