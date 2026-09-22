@@ -77,3 +77,53 @@ introducing slack variables $xi = (xi_1, dots, xi_n)$
 $ min_(w,b,xi) 1/2 norm(w)^2 + C sum_(i=1)^m xi_i $
 $ y_i (w^T x_i + b) >= 1 - xi_i $
 $ xi >= 0 $
+=
+== Existence of Solution
+#theorem[Extreme Value Theorem][
+
+  If $f$ is continuous on a nonempty compact set $K$, then $f$ attains its maximum
+  and minimum on $K$, i.e. there exist $x_1, x_2 in K$ s.t.
+  $ f(x_1) <= f(x) <= f(x_2), forall x in K $
+]
+
+#corollary[][
+
+  If $f$ if continuous on $RR^n$ and $f(x) -> + infinity$ as $norm(x) -> infinity$, then the global min exists
+  i.e. there exists $x^*$ s.t.
+  $ f(x^*) <= f(x), forall x $
+]
+
+#definition[Coercive][A function $f$ is called coercive if $f(x) -> + infinity$ as $norm(x) -> infinity$]
+
+#definition[Local Minimum][
+
+  $x^* in Omega$ is a local minimum of $f$ on $Omega$ if there exists $epsilon > 0$ s.t.
+  $ f(x^*) <= f(x), forall x in Omega inter B(x^*,epsilon) $
+  $x^*$ is a strict local minimun if strict inequality holds for $x != x^*$
+]
+== First-Order Conditions for Unconstrained Problems
+#theorem[First-Order Necessary Conditions for Unconstrained Problems][
+
+  If $x^*$ is a local minimum of $f$ and $f$ is differentiable at $x^*$, then its gradient at $x^*$ vanishes, i.e.
+  $ nabla f(x^*) = 0 $
+]
+#proof[][
+
+  Let $d in RR^n, t in RR$
+  $ g(t) = f(x^* + t d) $
+  $ g(t) >= g(0) => (g(t) - g(0))/t >= 0 => g^' (0) >= 0 => d^T nabla f(x^*) >= 0 $
+  Let $d = - nabla f(x^*)$
+  $ norm(nabla f(x^*))^2 <= 0 => nabla f(x^*) = 0 $
+
+]
+#definition[Stationary Point][
+
+  A point $x^*$ with $nabla f(x^*) = 0$ is called a stationary point of $f$]
+
+#theorem[First-Order Necessary Conditions for Constrained Problems][
+
+  If $x^*$ is in the interior of $Omega$, then $nabla f (x^*) = 0$
+
+  otherwise, $d^T nabla f(x^*) >= 0$ for any feasible direction $d$ at $x^*$
+]
+== Second-Order Conditions for Unconstrained Problems
