@@ -127,3 +127,67 @@ $ xi >= 0 $
   otherwise, $d^T nabla f(x^*) >= 0$ for any feasible direction $d$ at $x^*$
 ]
 == Second-Order Conditions for Unconstrained Problems
+#proposition[Rayleigh Quotient][
+
+  $A$ is symmetric, $x != 0$
+  $ lambda_min <= (x^T A x) / (x^T x) <= lambda_max $
+]
+#proof[][
+  $ x^T A x = x^T Q Lambda Q^T x = tilde(x)^T Lambda tilde(x) = sum_i lambda_i tilde(x)_i^2 $
+]
+
+#theorem[Second-Order Necessary Conditions][
+
+  If $f: RR^n -> RR$ is twice continuously differentiable and $x^*$ is a local minimum of $f$, then
+  $ nabla^2 f(x^*) succ.eq 0 $
+]
+#proof[][
+  $ f(x^* + t d) = f(x^*) + t^2/2 d^T nabla^2 f(x^*) d + o(t^2 norm(d)^2) >= f(x^*) $
+  $ 1/2 d^T nabla^2 f(x^*) d + o(norm(d)^2) >= 0, t->0 $
+  Taking $t->0$ yields $ d^T nabla^2 f (x^*) d >= 0 $
+]
+#theorem[Second-Order Sufficient Conditions][
+
+  Suppose $f$ is twice continuously differentiable. If
+  + $nabla f(x^*) = 0$
+  + $nabla^2 f(x^*) succ 0$
+  then $x^*$ is a local minimum.
+]
+#proof[][
+
+  Suppose $d != 0$
+  $
+    f(x^* + d) & = f(x^*) + 1/2 d^T nabla^2 f(x^*) d + o(norm(d)^2) \
+               & >= f(x^*) + 1/2 lambda_min norm(d)^2 - epsilon norm(d)^2 \
+               & > f(x^*)
+  $
+
+]
+#note[][
+  The second condition $nabla^2 f(x^*) succ 0$ cannot be replaced by $nabla^2 f(x^*) succ.eq 0$
+]
+=
+== Convex Sets
+#note[Lines, Line Segments and Rays][
+
+  Given $x != y in RR^n$
+  - line $ theta x + (1 - theta) y, theta in RR $
+  - ray $ theta x + (1 - theta) y, theta >= 0 $
+  - line segment $ theta x + (1 - theta) y, 0 <= theta <= 1 $
+]
+
+#note[][Often use notation $overline(theta) = 1 - theta$]
+
+#definition[Convex Sets][
+
+  A set $C subset RR^n$ is convex if the line segment between any two points $x, y in C$ lies entirely in $C$, i.e.
+  $ x in C, y in C, theta in [0, 1] => theta x + overline(theta) y in C $
+]
+
+#note[Examples of Convex Sets][
+  - $emptyset$, $RR^n$, points, lines, line segments, rays
+  - hyperplane $P = {x in RR^n : w^T x = b}$
+  - halfspace $H = {x in RR^n : w^T x <= b}$
+]
+
+#proposition[][]
