@@ -190,4 +190,156 @@ $ xi >= 0 $
   - halfspace $H = {x in RR^n : w^T x <= b}$
 ]
 
-#proposition[][]
+#proposition[Set Intersection Preserves Convexity][
+
+  The intersection of an arbitrary collection of convex sets is convex.
+]
+
+#note[Examples of Convex Sets][
+  - affine space $S = {x in RR^n: A x = b}$
+  - polyhedron $P = {x in RR^n: A x <= b}$ or more generally ${x in RR^n: A x <= b, C x = d}$
+]
+
+#proposition[Norm Balls Are Convex][
+
+  A closed ball $overline(B) (x_0, r) = {x in RR^n : norm(x - x_0) <= r}$ is convex.
+]
+
+#proof[][
+  $
+    norm((theta x_1 + overline(theta) x_2) - x_0) & = norm(theta(x_1 - x_0) + overline(theta)(x_2 - x_0)) \
+                                                  & <= norm(theta(x_1 - x_0)) + norm(overline(theta)(x_2 - x_0)) \
+                                                  & <= theta r + overline(theta) r \
+                                                  & = r
+  $
+]
+
+#note[][
+  True for any norm $norm(dot)$.
+]
+
+#note[][
+  Open balls are also convex.
+]
+
+#proposition[Ellipsoids Are Convex][
+
+  An ellipsoid $cal(E) = {x_0 + A u: norm(u)_2 <= 1}, A in RR^(n times n), A succ O$ is convex.
+]
+
+#proof[][
+  Using affine transformation preserves convexity, $cal(E)$ is convex.
+]
+#note[][Often written as $cal(E) = {x: (x - x_0)^T P^(-1) (x-x_0) <= 1}, P = A A^T succ 0$]
+
+#proposition[Affine Transformation Preserves Convexity][
+
+  If $C$ is convex, then $f(C)$ is convex.
+]
+
+#proof[][
+
+  Affine transformation satisfies
+  $ f(theta x_1 + overline(theta) x_2) = theta f(x_1) + overline(theta) f(x_2) $
+  $ x_1, x_2 in C => theta x_1 + overline(theta) x_2 in C $
+  $
+    theta y_1 + overline(theta) y_2 & = theta f(x_1) + overline(theta) f(x_2) \
+                                    & = f(theta x_1 + overline(theta) x_2) in f(C)
+  $
+]
+#proposition[Affine Transformation Preserves Convexity][
+
+  If $C$ is convex, then $f^(-1) (C)$ is convex.
+]
+
+#proof[][
+
+  Affine transformation satisfies
+  $ f(theta x_1 + overline(theta) x_2) = theta f(x_1) + overline(theta) f(x_2) $
+  $ y_1, y_2 in C => theta y_1 + overline(theta) y_2 in C $
+  $
+    f(theta x_1 + overline(theta) x_2) & = theta f(x_1) + overline(theta) f(x_2) \
+                                       & = theta y_1 + overline(theta) y_2 in C
+  $
+  $ theta x_1 + overline(theta) x_2 in f^(-1) (C) $
+
+]
+
+#definition[Convex Combination][
+  $ sum_(i=1)^m theta_i x_i = theta_1 x_1 + theta_2 x_2 + dots + theta_m x_m $
+  where $theta_i >= 0$ and $sum_(i=1)^m theta_i = 1$
+]
+
+#theorem[][
+
+  If $C$ is convex, and $x_i in C$, then any convex combination $sum_(i=1)^m theta_i x_i in C$
+]
+
+#proof[][
+
+  $y_1 = x_1$
+  $ y_k = sigma_(k-1) / sigma_k y_(k-1) + theta_k / sigma_k x_k, k>= 2 $
+  where
+  $ sigma_k = sum_(i=1)^k theta_i $
+  Note
+  $ y_m = sum_(i=1)^m theta_i x_i $
+]
+#definition[Convex Hull][
+
+  The convex hull of a set $S subset RR^n$, denoted $"conv" S$, is the smallest convex set containing $S$, i.e.
+  + $S subset "conv" S$
+  + $"conv" S$ is convex
+  + If $S subset S^'$ and $S^'$ is convex, then $"conv" S subset S^'$
+]
+
+#theorem[][
+
+  $"conv" S$ is the set of all convex combinations of points in $S$, i.e.
+  $ "conv" S = {sum_(i=1)^m theta_i x_i: m in NN; x_i in S; theta_i >=0; sum_(i=1)^m theta_i = 1} $
+]
+#proof[][
+
+  + Let $m=1$. Trivial.
+  + $
+      theta x + overline(theta) x^' = theta sum_(i=1)^m theta_i x_i + overline(theta) sum_(i=1)^n theta_i^' x_i^' = sum_(i=1)^m theta theta_i x_i + sum_(i=1)^n overline(theta) theta_i^' x_i^'
+    $
+    where $ sum_(i=1)^m theta theta_i + sum_(i=1)^n overline(theta) theta_i^' = 1 $
+  + If $S subset S^'$ and $S^'$ is convex,
+
+    $forall x in "conv" S$, $x = sum_(i=1)^m theta_i x_i$
+
+    Since $x_i in S subset S^'$, $S^'$ is convex, thus
+
+    $x = sum_(i=1)^m theta_i x_i in S^'$
+
+    $"conv" S subset S^'$
+]
+
+#definition[Affinely Independent Points][
+
+  $m+1$ points $x_0, x_1, dots, x_m in RR^n$ are affinely independent if $x_1 - x_0, dots, x_m - x_0$ are linearly independent.
+]
+
+#proposition[][
+
+  $x_0, x_1, dots, x_m in RR^n$ are affinely independent iff
+  $ sum_(i=0)^m c_i x_i = 0 "and" sum_(i=0)^m c_i = 0 => c_i = 0 $
+]
+
+#note[][
+
+  In $RR^n$, the maximum number of affinely independent is $n+1$.
+]
+
+#definition[Simplex][
+
+  An m-simplex is the convex hull of $m+1$ affinely independent points.
+  $ "conv"{x_0, dots, x_m} = {theta_0 x_0 + dots + theta_m x_m: theta >=0, 1^T theta = 1} $
+]
+
+#definition[Examples of Simplexes][
+  - Probability n-simplex in $RR^(n+1)$
+    $ Delta_n = {theta in RR^(n+1): theta >= 0, 1^T theta = 1} $
+  - Unit n-simplex in $RR^n$
+    $ Delta_n^' = {theta^' in RR^(n): theta^' >= 0, 1^T theta^' <= 1} $
+]
