@@ -182,6 +182,7 @@ $ xi >= 0 $
 
   A set $C subset RR^n$ is convex if the line segment between any two points $x, y in C$ lies entirely in $C$, i.e.
   $ x in C, y in C, theta in [0, 1] => theta x + overline(theta) y in C $
+  i.e. $C$ is closed under convex combination.
 ]
 
 #note[Examples of Convex Sets][
@@ -342,4 +343,223 @@ $ xi >= 0 $
     $ Delta_n = {theta in RR^(n+1): theta >= 0, 1^T theta = 1} $
   - Unit n-simplex in $RR^n$
     $ Delta_n^' = {theta^' in RR^(n): theta^' >= 0, 1^T theta^' <= 1} $
+]
+
+#definition[Cone][
+
+  A set $C$ is a cone if $x in C, theta >=0 => theta x in C$
+]
+
+
+#proposition[][
+
+  A set $C$ is a convex cone iff
+  $ x_1, x_2 in C, theta_1, theta_2 >=0 => theta_1 x_1 + theta_2 x_2 in C $
+  i.e. $C$ is closed under conic combination.
+]
+
+#proof[][
+
+  $C$ is a convex cone $=>$ closed under conic combination
+  $
+    theta_1 x_1 + theta_2 x_2 = (theta_1 + theta_2)(theta_1 / (theta_1 + theta_2) x_1 + theta_2 / (theta_1 + theta_2) x_2)
+  $
+  $
+    x_1, x_2 in C &=>^("convexity") theta_1 / (theta_1 + theta_2) x_1 + theta_2 / (theta_1 + theta_2) x_2 in C \ &=>^("conic") (theta_1 + theta_2)(theta_1 / (theta_1 + theta_2) x_1 + theta_2 / (theta_1 + theta_2) x_2) in C
+  $
+
+  Closed under conic combination $=>$ $C$ is a convex cone
+
+  Trivial.
+]
+
+#definition[Conic Hull][
+
+  The conic hull of a set $S$, denoted $"cone"(S)$, is the smallest convex cone containing $S$.
+  + $S subset "cone" S$
+  + $"cone" S$ is a convex cone
+  + If $S subset S^'$ and $S^'$ is a convex cone, then $"cone" S subset S^'$
+]
+
+#proposition[][
+
+  $"cone"(S)$ is the set of all conic combinations of points in $S$, i.e.
+  $ "cone"(S) = {sum_(i=1)^m theta_i x_i: m in NN; x_i in S; theta_i >= 0} $
+]
+== Projection & Separation
+All norms are Euclidean norm in this section.
+#definition[Point-Set Distance][
+
+  Given a set $C subset RR^n$, the distance between a point $x$ and $C$ is
+  $ "dist"(x, C) = inf_(z in C) norm(x - z) $
+]
+#theorem[][
+
+  If $C subset RR^n$ is nonempty, closed and convex, then for any $x$, there is a unique $hat(x) in C$ s.t.
+  $ "dist"(x, C) = norm(x - hat(x)) $
+  $hat(x)$ is called the projection of $x$ onto $C$ and denoted by $hat(x) = cal(P)_C (x)$
+]
+
+#proof[][
+
+  First show existence.
+
+  Let $z_0 in C$. Then $"dist"(x, C) <= norm(x - z_0)$
+
+  $ K = {z in C: norm(x - z) <= norm(x - z_0)} = C inter overline(B)(x, norm(x - z_0)) $
+  $norm(x - z)$ is continuous (1-Lipschitz continuous) in $K$, $K$ compact $=>$ Existence of minimizer.
+
+  Then show uniqueness.
+
+  Suppose $hat(x)_1, hat(x)_2 in C$ satisfy $"dist"(x, C) = norm(x - hat(x)_1) = norm(x - hat(x)_2)$
+
+  $hat(x)_c = (hat(x)_1 + hat(x)_2)/2 in C$ by convexity
+  $ norm(x - hat(x)_c) >= "dist"(x, C) $
+  Using the identity
+  $ norm(y + z)^2 + norm(y - z)^2 = 2 norm(y)^2 + 2 norm(z)^2 $
+  $
+    norm(hat(x)_1 - hat(x)_2)^2 & = 2 norm(x - hat(x)_1)^2 + 2 norm(x - hat(x)_2)^2
+                                  - norm(2x - (hat(x)_1 + hat(x)_2))^2 \
+                                & = 4 "dist"(x, C)^2 - 4 norm(x - x_c)^2 <= 0
+  $
+  $ hat(x)_1 = hat(x)_2 $
+]
+#note[][
+  $ cal(P)_C (x) = x <=> x in C $
+]
+
+#proposition[][
+
+  Let $C subset RR^n$ be nonempty, closed and convex. Given $hat(x) in C, hat(x) = cal(P)_C (x)$ iff
+  $ chevron(x-hat(x)"," z - hat(x)) <= 0, forall z in C $
+]
+#proof[][
+  #intuition[][Introduce $t$ to make $norm(z - hat(x))^2$ a higher-order term as $t->0$.]
+  Note $hat(x) + t(z - hat(x)) in C$, $forall z in C, t in [0, 1]$.
+
+  $
+    hat(x) = cal(P)_C (x) & <=> norm(x - hat(x) - t(z - hat(x)))^2 >= norm(x - hat(x))^2,
+                            quad forall z in C, t in [0, 1] \
+                          & <=> -2t chevron(x - hat(x)"," z - hat(x))
+                            + t^2 norm(z - hat(x))^2 >= 0,
+                            quad forall z in C, t in [0, 1] \
+                          & <=> chevron(x - hat(x)"," z - hat(x)) <= 0,
+                            quad forall z in C
+  $
+]
+#proof[][
+
+  $hat(x)$ is the minimizer of $f(z) = 1/2 norm(z - x)^2$
+
+  Using the first-order necessary conditions for constrained problems,
+
+  $d^T nabla f(hat(x)) >= 0$ for any feasible direction $d$ at $hat(x)$.
+  Let $d = z - hat(x)$
+  $ nabla f(z) = z - x $
+  $ (z - hat(x))^T (hat(x) - x)) >= 0 $
+  $ chevron(x-hat(x)"," z - hat(x)) <= 0, forall z in C $
+]
+#corollary[Nonexpansiveness of Projection][
+
+  The projection operator is nonexpansive, i.e.
+
+  $ norm(cal(P)_C (x) - cal(P)_C (y)) <= norm(x - y) $
+]
+#proof[][
+
+  Let $hat(x) = cal(P)_C (x)$, $hat(y) = cal(P)_C (y)$.
+
+  $
+    norm(x - y)^2 & = norm(hat(x) - hat(y))^2
+                    + norm(x - y - (hat(x) - hat(y)))^2
+                    + 2 chevron(x - y - (hat(x) - hat(y))"," hat(x) - hat(y)) \
+                  & >= norm(hat(x) - hat(y))^2
+                    - 2 underbrace(chevron(y - hat(y)"," hat(x) - hat(y)), <= 0)
+                    - 2 underbrace(chevron(x - hat(x)"," hat(y) - hat(x)), <= 0) \
+                  & >= norm(hat(x) - hat(y))^2
+  $
+]
+
+#corollary[][
+
+  Let $C subset RR^n$ be nonempty, closed and convex. For $x_0 in.not C$, there exists a  $w in RR^n \\ {0}$ s.t.
+  $ sup_(x in C) chevron(w"," x)<chevron(w"," x_0) $
+]
+
+#proof[][
+
+  Let $hat(x)_0 = cal(P)_C (x_0)$ and $w = x_0 - hat(x)_0$.
+  Since $x_0 in.not C$ and $hat(x)_0 in C$, $w != 0$.
+
+
+  $
+    chevron(w"," x - hat(x)_0) <= 0
+  $
+
+  Thus,
+
+  $
+    chevron(w"," x)
+    <= chevron(w"," hat(x)_0)
+    = chevron(w"," x_0) - chevron(w"," w)
+  $
+
+  Taking supremum over $C$,
+
+  $
+    sup_(x in C) chevron(w"," x)
+    <= chevron(w"," x_0) - chevron(w"," w)
+    < chevron(w"," x_0)
+  $
+]
+
+
+#definition[Boundary][
+  $ partial C = overline(C) \\ "int" C $
+
+]
+
+#theorem[Supporting Hyperplane Theorem][
+
+  If $C$ is nonempty, convex set in $RR^n$ and $x_0 in partial C$, then there exists $w in RR^n \\ {0}$ s.t.
+  $ chevron(w"," x) <= chevron(w"," x_0), forall x in C $
+  $P = {x: w^T x = w^T x_0}$ is called a supporting hyperplane to $C$ at $x_0$
+]
+#proof[][
+  #lemma[][If $C$ is convex, then $"int" C = "int" overline(C), partial C = partial overline(C)$]
+  $x_0 in partial C => x_0 in partial overline(C)$
+
+  $exists {x_k} "s.t." x_k in.not overline(C), x_k -> x_0 "as" k -> infinity$
+
+  $exists w_k != 0$ s.t.$chevron(w_k"," x) < chevron(w_k"," x_k), forall x in C$
+
+  By, rescaling, we can assume $norm(w_k) = 1$
+
+  Since ${w_k}$ is bounded after normalization, by the Bolzano-Weierstrass Theorem, ${w_k}$ has a convergent subsequence $w_k_i -> w$.
+
+
+
+  $ chevron(w_k_i"," x) < chevron(w_k_i"," x_k_i), forall x in C $
+  Take $i -> infinity$
+  $ chevron(w"," x) <= chevron(w"," x_0), forall x in C $
+]
+
+#theorem[Separating Hyperplane Theorem][
+
+  If $C_1, C_2$ are nonempty, convex sets in $RR^n$ with $C_1 inter C_2 = emptyset$, then $C_1$ and $C_2$ can be separated by a hyperplane, i.e. $exists w in RR^n \\ {0}, b in RR$ s.t.
+  $ w^T x <= b, forall x in C_1 $
+  $ w^T x >= b, forall x in C_2 $
+  $P={x: w^T x = b}$ is called a separating hyperplane for $C_1$ and $C_2$.
+]
+
+#proof[][
+  #lemma[][If $C_1, C_2$ are two nonempty convex sets s.t. $C_1 inter C_2 = emptyset$, then $C = C_1 - C_2 = {x_1 - x_2: x_1 in C_1, x_2 in C_2}$ is a nonempty convex set and $0 in.not C$
+  ]
+
+  We only need to show that $exists w != 0$ w.t.
+  $ w^T x_1 <= w^T x_2, forall x_1 in C_1, x_2 in C_2 $
+  Then we can take $ b = sup_(x_1 in C_1) w^T x_1 in RR $
+  Let $C = C_1 - C_2$. The above inequality is equivalent to
+  $ chevron(w"," x) <= 0, forall x in C $
+
 ]
