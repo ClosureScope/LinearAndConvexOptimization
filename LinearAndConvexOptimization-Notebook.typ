@@ -101,8 +101,8 @@ $ xi >= 0 $
   $ f(x^*) <= f(x), forall x in Omega inter B(x^*,epsilon) $
   $x^*$ is a strict local minimun if strict inequality holds for $x != x^*$
 ]
-== First-Order Conditions for Unconstrained Problems
-#theorem[First-Order Necessary Conditions for Unconstrained Problems][
+== First-Order Condition for Unconstrained Problems
+#theorem[First-Order Necessary Condition for Unconstrained Problems][
 
   If $x^*$ is a local minimum of $f$ and $f$ is differentiable at $x^*$, then its gradient at $x^*$ vanishes, i.e.
   $ nabla f(x^*) = 0 $
@@ -120,13 +120,13 @@ $ xi >= 0 $
 
   A point $x^*$ with $nabla f(x^*) = 0$ is called a stationary point of $f$]
 
-#theorem[First-Order Necessary Conditions for Constrained Problems][
+#theorem[First-Order Necessary Condition for Constrained Problems][
 
   If $x^*$ is in the interior of $Omega$, then $nabla f (x^*) = 0$
 
   otherwise, $d^T nabla f(x^*) >= 0$ for any feasible direction $d$ at $x^*$
 ]
-== Second-Order Conditions for Unconstrained Problems
+== Second-Order Condition for Unconstrained Problems
 #proposition[Rayleigh Quotient][
 
   $A$ is symmetric, $x != 0$
@@ -136,7 +136,7 @@ $ xi >= 0 $
   $ x^T A x = x^T Q Lambda Q^T x = tilde(x)^T Lambda tilde(x) = sum_i lambda_i tilde(x)_i^2 $
 ]
 
-#theorem[Second-Order Necessary Conditions][
+#theorem[Second-Order Necessary Condition][
 
   If $f: RR^n -> RR$ is twice continuously differentiable and $x^*$ is a local minimum of $f$, then
   $ nabla^2 f(x^*) succ.eq 0 $
@@ -146,7 +146,7 @@ $ xi >= 0 $
   $ 1/2 d^T nabla^2 f(x^*) d + o(norm(d)^2) >= 0, t->0 $
   Taking $t->0$ yields $ d^T nabla^2 f (x^*) d >= 0 $
 ]
-#theorem[Second-Order Sufficient Conditions][
+#theorem[Second-Order Sufficient Condition][
 
   Suppose $f$ is twice continuously differentiable. If
   + $nabla f(x^*) = 0$
@@ -360,7 +360,7 @@ $ xi >= 0 $
 
 #proof[][
 
-  $C$ is a convex cone $=>$ closed under conic combination
+  $=>$
   $
     theta_1 x_1 + theta_2 x_2 = (theta_1 + theta_2)(theta_1 / (theta_1 + theta_2) x_1 + theta_2 / (theta_1 + theta_2) x_2)
   $
@@ -368,9 +368,7 @@ $ xi >= 0 $
     x_1, x_2 in C &=>^("convexity") theta_1 / (theta_1 + theta_2) x_1 + theta_2 / (theta_1 + theta_2) x_2 in C \ &=>^("conic") (theta_1 + theta_2)(theta_1 / (theta_1 + theta_2) x_1 + theta_2 / (theta_1 + theta_2) x_2) in C
   $
 
-  Closed under conic combination $=>$ $C$ is a convex cone
-
-  Trivial.
+  $arrow.l.double$ is trivial.
 ]
 
 #definition[Conic Hull][
@@ -451,7 +449,7 @@ All norms are Euclidean norm in this section.
 
   $hat(x)$ is the minimizer of $f(z) = 1/2 norm(z - x)^2$
 
-  Using the first-order necessary conditions for constrained problems,
+  Using the first-order necessary condition for constrained problems,
 
   $d^T nabla f(hat(x)) >= 0$ for any feasible direction $d$ at $hat(x)$.
   Let $d = z - hat(x)$
@@ -533,7 +531,7 @@ All norms are Euclidean norm in this section.
 
   $exists w_k != 0$ s.t.$chevron(w_k"," x) < chevron(w_k"," x_k), forall x in C$
 
-  By, rescaling, we can assume $norm(w_k) = 1$
+  By rescaling, we can assume $norm(w_k) = 1$
 
   Since ${w_k}$ is bounded after normalization, by the Bolzano-Weierstrass Theorem, ${w_k}$ has a convergent subsequence $w_k_i -> w$.
 
@@ -556,10 +554,207 @@ All norms are Euclidean norm in this section.
   #lemma[][If $C_1, C_2$ are two nonempty convex sets s.t. $C_1 inter C_2 = emptyset$, then $C = C_1 - C_2 = {x_1 - x_2: x_1 in C_1, x_2 in C_2}$ is a nonempty convex set and $0 in.not C$
   ]
 
-  We only need to show that $exists w != 0$ w.t.
+  We only need to show that $exists w != 0$ s.t.
   $ w^T x_1 <= w^T x_2, forall x_1 in C_1, x_2 in C_2 $
   Then we can take $ b = sup_(x_1 in C_1) w^T x_1 in RR $
   Let $C = C_1 - C_2$. The above inequality is equivalent to
   $ chevron(w"," x) <= 0, forall x in C $
+  Since $0 in.not C$, there are two cases.
+  + If $0 in.not overline(C)$, use that a closed convex set can be strictly separated from a point not in it.
+  + If $0 in partial C$, use the supporting hyperplane theorem.
 
+]
+
+#lemma[Farkas' Lemma][
+
+  Given $A in RR^(m times n), b in RR^m$, exactly one of the following sets is empty,
+  + $S_1 = {x in RR^n: A x = b, x >= 0}$
+  + $S_2 = {y in RR^m: A^T y <= 0, b^T y > 0}$
+  #intuition[][
+    $ S_1 != emptyset <=> b in "cone"A $
+    $ S_2 != emptyset <=> b in.not "cone"A $
+  ]
+]
+#proof[][
+
+  Only need to show
+  $ S_1 != emptyset <=> b in "cone"A $
+  $ S_2 != emptyset <=> b in.not "cone"A $
+  $S_1 != emptyset <=> b in "cone"A$ is trivial.
+
+  $=>$
+
+  $exists y_0 in S_2$
+
+  $forall z in "cone"A, exists x >= 0, z = A x$
+  $ z^T y_0 = x^T (A^T y_0) <= x^T 0 = 0 $
+  However, $b^T y_0 > 0$, implying that $b in.not "cone"A$
+
+  $arrow.double.l$
+
+  Since $b in.not "cone"A$ and $"cone"A$ is closed and convex, $exists y_0$ that enables strict separation,
+  $ sup_(z in "cone"A) z^T y_0 < b^T y_0 $
+  We only need to show that $y_0 in S_2$
+
+  Setting $z = 0$ derives $b^T y_0 > 0$
+
+  $forall z in "cone"A$, since $theta z in "cone"A, forall theta >= 0$
+  $ z^T y_0 = 1 / theta (theta z)^T y_0 < 1/ theta b^T y_0 $
+  Taking the limit $theta -> infinity$
+  $ z^T y_0 <= lim_(theta-> infinity) 1/theta b^T y_0 = 0 $
+  Since $forall a_i, a_i in "cone"A$, thus $a_i^T y_0 <= 0$, thus $A^T y_0 <= 0$
+]
+=
+== Convex Functions
+=== Convex Functions
+#definition[Convex Functions][
+
+  $f: S subset RR^n -> RR$ is convex if
+  + its domain $"dom"f = S$ is a convex set
+  + $forall x, y in S, theta in [0, 1]$, Jensen's inequality holds,
+    $ f(theta x + overline(theta) y) <= theta f(x) + overline(theta) f(y) $
+]
+
+#definition[Strictly Convex Functions][
+
+  $f: S subset RR^n -> RR$ is strictly convex if
+  + its domain $"dom"f = S$ is a convex set
+  + $forall x != y in S, theta in (0, 1)$,
+    $ f(theta x + overline(theta) y) < theta f(x) + overline(theta) f(y) $
+  #intuition[][
+    The restriction of $f$ to any line segment in $S$ is not an affine function.
+  ]
+]
+#proposition[][
+
+  Let $f$ be convex and $x, y in "dom"f$. Exactly one of the following holds,
+  + $f(theta x + overline(theta) y) = theta f(x) + overline(theta) f(y), forall theta in [0, 1]$
+  + $f(theta x + overline(theta) y) < theta f(x) + overline(theta) f(y), forall theta in (0, 1)$
+]
+
+#proof[][
+
+  Case 1: $forall theta in [0, 1], f(theta x + overline(theta) y) = theta f(x) + overline(theta) f(y)$
+
+  In this case, 1 holds while 2 does not hold.
+
+  Case 2: $exists theta in [0, 1], f(theta x + overline(theta) y) < theta f(x) + overline(theta) f(y)$
+
+  Obviously, $exists theta_0 in (0, 1), z = theta_0 x + overline(theta)_0 y, f(z) < theta_0 f(x) + overline(theta)_0 f(y)$
+
+  In this case, 1 does not hold. We only need to show that 2 holds.
+  $forall theta in (0, 1)$
+  + $theta = theta_0$ Trivial.
+  + $theta > theta_0$
+
+    $theta x + overline(theta) y = theta^' x + overline(theta)^' z$ where $theta^' = (theta - theta_0) / (1-theta_0)$
+    $
+      f( theta f(x) + overline(theta) f(y)) &=f(theta^' x + overline(theta)^' z) <= theta^' f(x) + overline(theta)^' f(z) \ &< theta^' f(x) + overline(theta)^' ( theta_0 f(x) + overline(theta)_0 f(y)) = theta f(x) + overline(theta) f(y)
+    $
+  + Similar to 2.
+]
+#definition[Concave Functions][
+  $f$ is (strictly) concave if $-f$ is (strictly) convex.
+]
+
+#proposition[Restriction to Lines][
+
+  $f$ is convex iff $forall x in "dom"f$ and any direction $d$, $g(t) = f(x + t d)$ is convex on $"dom"g = {t: x + t d in "dom"f}$
+]
+
+#proof[][
+
+  Using affine transformation preserves convexity, $"dom"f "is convex" <=> "dom"g "is convex"$.
+
+  Using
+  $ f(theta x_1 + overline(theta) x_2) = g(theta t_1 + overline(theta) t_2) $
+  $ theta f(x_1) + overline(theta) f(x_2) = theta g(t_1) + overline(theta) g(t_2) $
+  derives
+  $ f "is convex" <=> g "is convex" $
+]
+
+#definition[Extended-Value Extension][
+
+  $tilde(f): RR^n -> RR union {infinity}$ is defined by $ tilde(f)(x) = cases(f(x) quad &x in S, infinity quad &x in.not S) $
+  The (effective) domain of $tilde(f)$
+  $ "dom"tilde(f) = "dom"f = S = {x: tilde(f)(x) < infinity} $
+]
+
+#proposition[][
+
+  $f$ is convex iff $tilde(f)$ is convex.
+]
+
+#proof[][
+
+  $=>$
+  + $theta = 0, 1$, trivial.
+  + $0 < theta < 1$
+    + $x in.not S$ or $y in.not S$, the right side is $infinity$, so the inequality must hold.
+    + $x, y in S$, trivial.
+  $arrow.l.double$ is trivial.
+]
+=== First-Order Condition for Convexity
+#theorem[First-Order Condition for Convexity][
+
+  A differentiable $f$ with an open convex domain $"dom"f$ is convex iff
+  $ f(y) >= f(x) + nabla f(x)^T (y - x) , forall x, y in "dom"f $
+  #intuition[][
+    First-order Taylor approximation underestimates a convex function.
+  ]
+]
+
+#proof[][
+
+  $=>$
+
+  Let $d = y - x$
+  $ f(x+t d) = f(t y + overline(t) x) <= t f(y) + overline(t) f(x), t in (0, 1) $
+  $
+    (f(x + t d) - f(x)) / t <= f(y) - f(x)
+  $
+
+  Letting $t -> 0$,
+
+  $
+    nabla f(x)^T (y - x)
+    = nabla f(x)^T d
+    <= f(y) - f(x)
+  $
+
+  $arrow.double.l$
+
+  Let $z = theta x + overline(theta) y$.
+
+  $
+    f(x) & >= f(z) + nabla f(z)^T (x - z)
+  $$
+    f(y) & >= f(z) + nabla f(z)^T (y - z)
+  $
+
+
+  $
+    theta f(x) + overline(theta) f(y) & >= f(z) & = f(theta x + overline(theta) y)
+  $
+]
+
+#theorem[First-Order Condition for Strict Convexity][
+
+  A differentiable $f$ with an open convex domain $"dom"f$ is strictly convex iff
+  $ f(y) > f(x) + nabla f(x)^T (y - x) , forall x, y in "dom"f $
+
+]
+
+#proof[][
+
+  Similar to the proof of First-Order Condition for Convexity, but $=>$ needs modification.
+
+  For $0 < t < s < 1$, similarly,
+  $ nabla f(x)^T (x + s d - x) = nabla f(x)^T (s d) <= f(x + s d) - f(x) $
+  $ nabla f(x)^T d <= (f(x + s d) - f(x)) / s < f(y) - f(x) $
+]
+
+#corollary[][
+
+  A differentiable $f: I -> RR$ defined on an open interval $I subset RR$ is (strictly) convex iff $f^'$ is (strictly) increasing on $I$.
 ]
