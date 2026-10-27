@@ -758,3 +758,116 @@ All norms are Euclidean norm in this section.
 
   A differentiable $f: I -> RR$ defined on an open interval $I subset RR$ is (strictly) convex iff $f^'$ is (strictly) increasing on $I$.
 ]
+
+#proof[][
+
+  We prove the convex case.
+
+  $arrow.double.l$
+
+  $ f(y) - f(x) = f^' (c) (y - x) >= f^' (x) (y - x) $
+
+  By the first-order condition, $f$ is convex.
+
+  $=>$
+
+  $ f(y) >= f(x) + f^' (x) (y - x) $
+  $ f(x) >= f(y) + f^' (y) (x - y) $
+  $ f^' (x) <= (f(y) - f(x)) / (y - x) <= f^' (y) $
+]
+
+#corollary[Optimality of Stationary Points][
+
+  If $nabla f(x^*) = 0$ for a convex function $f$, then $x^*$ is a global minimum. If $f$ is strictly convex, then $x^*$ is the unique global minimum.
+]
+
+#proof[][
+  $ f(x) >= f(x^*) + nabla f(x^*)^T (x - x^*) = f(x^*) $
+  Similar for the strictly convex case.
+]
+=== Second-Order Condition for Convexity
+#theorem[][
+
+  A twice differentiable $f: I -> RR$ defined on an open interval $I subset RR$ is convex iff $f''(x) >= 0, forall x in I$
+]
+#proof[][
+
+  $f$ convex $<=>$ $f^'$ increasing on $I$ $<=>$ $f''(x) >= 0, forall x in I$
+]
+
+#theorem[][
+
+  A twice continuously differentiable $f$ with an open convex domain $"dom"f$ is convex iff $nabla^2 f(x) succ.eq 0 , forall x in "dom"f$
+]
+
+#proof[][
+
+  $f$ convex
+  $<=>$
+  $g(t) = f(x + t d)$ is convex $forall d$
+  $<=>$
+  $g''(t) = d^T nabla^2 f(x + t d) d >= 0$ $forall d, t$
+  $<=>$
+  $nabla^2 f(x) succ.eq 0 , forall x in "dom"f$
+]
+
+#theorem[][
+
+  A twice continuously differentiable $f$ with an open convex domain $"dom"f$ is strictly convex #text(fill: red)[if] $nabla^2 f(x) succ 0 , forall x in "dom"f$
+]
+
+#note[Examples of Convex Functions][
+  - Negative entropy $f(x) = x log x$ is strictly convex.
+  - Quadratic functions $f(x) = x^T Q x + b^T x + c$ is convex iff $Q succ.eq 0$ and strictly convex iff $Q succ 0$.
+  - Least squares loss $f(w) = norm(X w - y)_2^2$ is always convex and strictly convex iff $X$ has full column rank.
+  - Log-sum-exp function $f(x) = log(sum_(i=1)^n e^(x_i))$ is convex.
+]
+== Properties of Convex Functions
+#theorem[Global Minima of Convex Functions][
+
+  Let $f$ be a convex function defined over a convex set $S$. If $x^*$ is a local minimum , it is also a global minimum.
+]
+
+#proof[][
+
+  Suppose $y in S, y != x^*, f(y) < f(x^*)$. Let $x = theta y + overline(theta) x^*$
+  $ f(x) <= theta f(y) + overline(theta) f(x^*) < f(x^*) $
+  $norm(x - x^*) = theta norm(x^* - y) -> 0$ as $theta -> 0$ and $x in S$ by convexity of $S$
+
+  contradicting that $x^*$ is a local minimum
+]
+#theorem[Unique Global Minimum of Convex Functions][
+
+  Let $f$ be a convex function defined over a convex set $S$. If $x^* in S$ is a global minimum, then it is unique.
+]
+
+#proof[][
+  Suppose $exists y^* in S, y^* != x^*, f(y^*) = f(x^*)$
+  $ f((x^* + y^*)/2) < 1/2 f(x^*) + 1/2 f(y^*) = f(x^*) $
+  contradicting the global optimality of $x^*$
+]
+
+#definition[Sublevel Sets][
+  $ C_alpha = {x in "dom"f : f(x) <= alpha} $
+]
+
+#theorem[Sublevel Sets Are Convex][Sublevel sets of a convex function are convex.]
+
+#definition[Epigraph][
+  $ "epi"f = {(x, y) in RR^(n+1) : x in S, y >= f(x)} $
+]
+#note[][$f$ and $tilde(f)$ have the same epigraph.]
+
+#theorem[][$f$ is convex iff $"epi"f$ is convex.]
+#proof[][
+
+  $=>$
+  $ x = theta x_1 + overline(theta) x_2 $
+  $ y = theta y_1 + overline(theta) y_2 $
+  $ y >= theta f(x_1) + overline(theta) f(x_2) >= f(theta x_1 + overline(theta) x_2) = f(x) $
+
+  $arrow.double.l$ is trivial.
+]
+
+#theorem[][The projection of a convex set is convex.]
+#theorem[][]
