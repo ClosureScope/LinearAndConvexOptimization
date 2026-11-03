@@ -329,7 +329,7 @@ $ xi >= 0 $
 
 #note[][
 
-  In $RR^n$, the maximum number of affinely independent is $n+1$.
+  In $RR^n$, the maximum number of affinely independent points is $n+1$.
 ]
 
 #definition[Simplex][
@@ -391,7 +391,7 @@ All norms are Euclidean norm in this section.
   Given a set $C subset RR^n$, the distance between a point $x$ and $C$ is
   $ "dist"(x, C) = inf_(z in C) norm(x - z) $
 ]
-#theorem[][
+#theorem[Projection][
 
   If $C subset RR^n$ is nonempty, closed and convex, then for any $x$, there is a unique $hat(x) in C$ s.t.
   $ "dist"(x, C) = norm(x - hat(x)) $
@@ -478,7 +478,7 @@ All norms are Euclidean norm in this section.
   $
 ]
 
-#corollary[][
+#corollary[Strict Separation][
 
   Let $C subset RR^n$ be nonempty, closed and convex. For $x_0 in.not C$, there exists a  $w in RR^n \\ {0}$ s.t.
   $ sup_(x in C) chevron(w"," x)<chevron(w"," x_0) $
@@ -657,7 +657,7 @@ All norms are Euclidean norm in this section.
   $f$ is (strictly) concave if $-f$ is (strictly) convex.
 ]
 
-#proposition[Restriction to Lines][
+#proposition[Restriction to Lines Is Convex][
 
   $f$ is convex iff $forall x in "dom"f$ and any direction $d$, $g(t) = f(x + t d)$ is convex on $"dom"g = {t: x + t d in "dom"f}$
 ]
@@ -795,7 +795,7 @@ All norms are Euclidean norm in this section.
   $f$ convex $<=>$ $f^'$ increasing on $I$ $<=>$ $f''(x) >= 0, forall x in I$
 ]
 
-#theorem[][
+#theorem[Second-Order Condition for Convexity][
 
   A twice continuously differentiable $f$ with an open convex domain $"dom"f$ is convex iff $nabla^2 f(x) succ.eq 0 , forall x in "dom"f$
 ]
@@ -811,7 +811,7 @@ All norms are Euclidean norm in this section.
   $nabla^2 f(x) succ.eq 0 , forall x in "dom"f$
 ]
 
-#theorem[][
+#theorem[Second-Order Condition for Strict Convexity][
 
   A twice continuously differentiable $f$ with an open convex domain $"dom"f$ is strictly convex #text(fill: red)[if] $nabla^2 f(x) succ 0 , forall x in "dom"f$
 ]
@@ -823,7 +823,7 @@ All norms are Euclidean norm in this section.
   - Log-sum-exp function $f(x) = log(sum_(i=1)^n e^(x_i))$ is convex.
 ]
 == Properties of Convex Functions
-#theorem[Global Minima of Convex Functions][
+#theorem[Local Minima Are Global Minima for Convex Functions][
 
   Let $f$ be a convex function defined over a convex set $S$. If $x^*$ is a local minimum , it is also a global minimum.
 ]
@@ -836,9 +836,9 @@ All norms are Euclidean norm in this section.
 
   contradicting that $x^*$ is a local minimum
 ]
-#theorem[Unique Global Minimum of Convex Functions][
+#theorem[Global Minimum Is Unique For Strictly Convex Functions][
 
-  Let $f$ be a convex function defined over a convex set $S$. If $x^* in S$ is a global minimum, then it is unique.
+  Let $f$ be a strictly convex function defined over a convex set $S$. If $x^* in S$ is a global minimum, then it is unique.
 ]
 
 #proof[][
@@ -858,7 +858,7 @@ All norms are Euclidean norm in this section.
 ]
 #note[][$f$ and $tilde(f)$ have the same epigraph.]
 
-#theorem[][$f$ is convex iff $"epi"f$ is convex.]
+#theorem[Epigraphs Are Convex][$f$ is convex iff $"epi"f$ is convex.]
 #proof[][
 
   $=>$
@@ -869,5 +869,92 @@ All norms are Euclidean norm in this section.
   $arrow.double.l$ is trivial.
 ]
 
-#theorem[][The projection of a convex set is convex.]
-#theorem[][]
+#theorem[Projections Are Convex][The projection of a convex set is convex.]
+#theorem[Jensen's Inequality][
+
+  $f$ is convex, $x_i in "dom"f, theta_i >=0, sum_(i=1)^m theta_i = 1$
+  $ f(sum_(i=1)^m theta_i x_i) <= sum_(i=1)^m theta_i f(x_i) $
+]
+
+#theorem[Holder's Inequality][
+
+  $p, q in (1, infinity)$ are conjugate exponents, i.e. $p^(-1) + q^(-1) = 1$
+  $ sum_(i=1)^n abs(x_i y_i) <= norm(x)_p norm(y)_q $
+]
+
+#theorem[Minkowski's Inequality][
+  $1 < p < infinity$
+  $ norm(x + y)_p <= norm(x)_p + norm(y)_p $
+]
+== Convexity-Preserving Operations
+#proposition[Nonnegative Combinations Preserve Convexity][
+
+  $f_i$ are convex, $c_1, dots, c_m >= 0$
+  $ f(x) = sum_(i=1)^m c_i f_i (x) $
+  is convex.
+]
+#proof[][Trivial.]
+#proposition[Affine Composition Preserves Convexity][
+
+  $g$ is convex
+  $ f(x) = g(A x + b) $
+  is convex.
+]
+#proof[][
+
+  $h(x)$ is an affine transformation. $g$ is convex.
+  $
+    f(x) & = g(h(x)) = g(h(theta x_1 + overline(theta) x_2)) = g(theta h(x_1) + overline(theta) h(x_2)) \
+         & <= theta g(h(x_1)) + overline(theta) g(h(x_2)) = theta f(x_1) + overline(theta) f(x_2)
+  $
+]
+
+#proposition[Scalar Composition][
+
+  $g: RR^n -> RR, h: RR -> RR, f(x) = h(g(x))$
+  - $f$ is convex if $h$ is convex and increasing, $g$ is convex
+  - $f$ is convex if $h$ is convex and decreasing, $g$ is concave
+  - $f$ is concave if $h$ is concave and increasing, $g$ is concave
+  - $f$ is concave if $h$ is concave and decreasing, $g$ is convex
+  #intuition[][
+    $ f''(x) = h''(g(x))[g'(x)]^2 + h'(g(x)) g''(x) $
+    $f'', h'', h' g''$ should have the same sign.
+  ]
+]
+#proof[][
+
+  Prove case 1.
+  $
+    f(x) & = h(g(x)) = h(g(theta x_1 + overline(theta) x_2)) <= h(theta g(x_1) + overline(theta) g(x_2)) \
+         & <= theta h(g(x_1)) + overline(theta) h(g(x_2)) = theta f(x_1) + overline(theta) f(x_2)
+  $
+]
+
+#proposition[Pointwise Maximum Preserves Convexity][
+
+  $f_i$ are convex
+  $ f(x) = max_(1 <= i<=m) f_i (x) $
+  is convex.
+]
+
+#proof[][
+
+  $f_i$ are convex $=>$ $"epi"f_i$ are convex
+  $ "epi"f = inter.big_(i=1)^m "epi"f_i $
+  $"epi"f$ is convex $=>$ $f$ is convex
+]
+
+#proposition[Pointwise Supremum Preserves Convexity][
+
+  $f_i$ are convex
+  $ f(x) = sup_(i in I) f_i (x) $
+  is convex.
+]
+#proof[][Similar to the case of pointwise maximum.]
+
+#proposition[Partial Minimization Preserves Convexity][
+
+  $g: RR^n times RR^m -> (-infinity, infinity]$ is convex, $emptyset != C subset RR^m$ is convex
+  $ f(x) = inf_(y in C) g(x, y) $
+  is convex provided $f(x) > -infinity$.
+]
