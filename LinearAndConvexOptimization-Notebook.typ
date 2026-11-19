@@ -8,6 +8,9 @@
   title: [线性优化与凸优化],
   author: "Closure",
   figure-index: (enabled: true),
+  raw-text: (
+    custom-font: ("JetBrains Mono", "Noto Sans SC"),
+  ),
 )
 
 = Introduction
@@ -99,7 +102,7 @@ $ xi >= 0 $
 
   $x^* in Omega$ is a local minimum of $f$ on $Omega$ if there exists $epsilon > 0$ s.t.
   $ f(x^*) <= f(x), forall x in Omega inter B(x^*,epsilon) $
-  $x^*$ is a strict local minimun if strict inequality holds for $x != x^*$
+  $x^*$ is a strict local minimum if strict inequality holds for $x != x^*$
 ]
 == First-Order Condition for Unconstrained Problems
 #theorem[First-Order Necessary Condition for Unconstrained Problems][
@@ -958,3 +961,336 @@ All norms are Euclidean norm in this section.
   $ f(x) = inf_(y in C) g(x, y) $
   is convex provided $f(x) > -infinity$.
 ]
+#proof[][
+
+  $exists y_1, y_2$
+  $ f(x_1) = inf_(y in C) g(x_1, y) > g(x_1, y_1) - epsilon $
+  $ f(x_2) = inf_(y in C) g(x_2, y) > g(x_2, y_2) - epsilon $
+  $
+    f(theta x_1 + overline(theta) x_2) & = inf_(y in C) g(theta x_1 + overline(theta) x_2, y) \
+                                       & <= g(theta x_1 + overline(theta) x_2,theta y_1 + overline(theta) y_2) \
+                                       & <= theta g(x_1, y_1) + overline(theta) g(x_2, y_2) \
+                                       & < theta (f(x_1) + epsilon) + overline(theta) (f(x_2) + epsilon) \
+                                       & = theta f(x_1) + overline(theta) f(x_2) + epsilon
+  $
+  $epsilon->0$
+  $ f(theta x_1 + overline(theta) x_2) <= theta f(x_1) + overline(theta) f(x_2) $
+]
+=
+== Convex Optimization Problems
+#definition[Optimization Problems][
+  $ min_x f(x) $
+  $ g_i (x) <= 0 $
+  $ h_i (x) = 0 $
+
+]
+
+#definition[Optimal Value][
+  $ f^* = inf_(x in Omega) f(x) $
+  - $f^* = infinity$ if P is infeasible
+  - $f^* = - infinity$ if P is unbounded below
+  - $x^*$ is an optimal point of P or solves P, if $x^* in Omega, f^* = f(x^*)$
+  - $x_0$ is $epsilon$-suboptimal if $x_0 in Omega, f(x_0) <= f^* + epsilon$
+  - $x^*$ is locally optimal if it solves P with the additional constraint $norm(x - x^*) <= delta$ for some $delta > 0$
+]
+#definition[Convex Optimization Problems][
+  $ min_x f(x) $
+  $ g_i (x) <= 0 $
+  $ h_i (x) = 0 $
+  + $f, g_i$ are convex functions
+  + $h_i$ are affine functions
+]
+#proposition[Properties of Convex Optimization Problems][
+  - The set of solutions (global minima) $X_"opt"$ is convex
+  - Any local minimum is a global minimum
+  - If $f$ is strictly convex, at most one solution, i.e. $abs(X_"opt") <= 1$
+]
+
+#theorem[First-Order Optimality Condition][
+
+  For a convex problem whose objective $f$ is differentiable with open domain $"dom"f$, a feasible point $x^* in Omega$ is optimal iff
+  $ nabla f(x^*)^T (x - x^*) >= 0, forall x in Omega $
+]
+#proof[][
+
+  $arrow.double.l$
+
+  By the first-order condition for convexity
+  $ f(x) >= f(x^*) + nabla f(x^*)^T (x - x^*) >= f(x^*) $
+  $=>$
+
+  Trivial.
+]
+
+== LP
+#definition[Linear Program][LP][
+  $ min_x c^T x $
+  $ B x <= d $
+  $ A x = b $
+  LP is a convex optimization problem.
+  #definition[Standard Form][
+    $ min_x c^T x $
+    $ A x = b $
+    $ x >= 0 $
+  ]
+  #definition[Inequality Form][
+    $ min_x c^T x $
+    $ A x <= b $
+  ]
+]
+
+#strategy[Conversion to Standard Form][
+
+  Eliminate inequality constraints by introducing slack variables $s$
+  #columns(2)[  $ min_x c^T x $
+    $ B x <= d $
+    $ A x = b $
+    #colbreak()
+    $ min_(x, s) c^T x $
+    $ B x + s = d $
+    $ A x = b $
+    $ s >= 0 $]
+  Split variables into positive and negative parts $x = x^+ - x^-$
+  $ min_(x^+, x^-, s) c^T x^+ - c^T x^- $
+  $ B x^+ - B x^- + s = d $
+  $ A x^+ - A x^- = b $
+  $ x^+ >=0, x^- >= 0, s >= 0 $
+
+]
+#strategy[Conversion to Inequality Form][
+
+  Method 1: Eliminate extra variables using equality constraints
+
+  Method 2: Rewrite the equality constraints as two inequality constraints
+]
+
+#definition[Basic Solution][
+  $ min_x c^T x $
+  $ A x = b $
+  $ x >= 0 $
+  $A=[a_1, dots, a_n] in RR^(m times n), "rank"A = m < n$
+
+  A solution $x$ is a basic solution if $a_i_1, dots, a_i_m$ are linearly independent, and $x_i = 0$ for $i in.not I = {i_1, dots, i_m}$
+
+  $B = [a_i_1, dots, a_i_m]$ is called a basis
+
+  $x_i, i in I$ are basic variables
+
+  $x_i, i in.not I$ are nonbasic variables
+
+  A basic solution is nondegenerate if all basic variables are positive.
+
+  A basic feasible solution (BFS) is a basic solution that is also feasible
+]
+#definition[Extreme Point][
+
+  Given a convex set $C$, $x in C$ is an extreme point of $C$ if $x$ is not the stirct convex combination of two distinct points of $C$
+]
+#theorem[][
+
+  Let $Omega = {x : A x = b, x >= 0}$ be the feasible set of L with $"rank"A = m$.
+
+  $x$ is an extreme point of $Omega$ iff it is a BFS
+]
+
+#proof[][
+
+  $arrow.double.l$
+
+  $x = (x_1, 0)$ is a BFS. Suppose $exists y = (y_1, y_2) in Omega, z = (z_1, z_2) in Omega$
+  $ x = theta y + overline(theta) z $
+  $ 0 = theta y_2 + overline(theta) z_2 $
+  Since $theta, overline(theta), y_2, z_2 >= 0$
+  $ y_2 = z_2 = 0 $
+  $ B y_1 = B z_1 = b $
+  $B$ is nonsingular
+  $ y_1 = z_1 $
+  So
+  $ y = z $
+
+  $=>$
+
+  Suppose $x = (x_1, 0)$ is an extreme point with $p$ nonzero components.
+
+  We only need to show $a_1, dots, a_p$ are linearly independent.
+
+  Suppose the columns of $B = [a_1, dots, a_p]$ are linearly dependent i.e.
+  $exists y_1, B y_1 = 0$
+
+  $y = (y_1, 0)$
+  $ x = 1/2 (x - epsilon y) + 1/2 (x + epsilon y) $
+
+  $0 < epsilon < min{x_i / abs(y_i) : y_i != 0}$, $x - epsilon y$ and $x + epsilon y$ are distinct points in $Omega$, contradicting that $x$ is an extreme point.
+
+
+]
+
+#theorem[][
+
+  Consider L where $A in RR^(m times n)$ has full row rank
+
+  + If L has a feasible solution, then it has a BFS
+  + If L has an optimal solution, then it has an optimal BFS
+]
+#proof[Proof of 1][
+
+  From $A = [a_1, a_2, dots, a_n]$ and a feasible solution $x = (x_1, dots, x_p, 0, dots, 0)$, we can construct a BFS as follows.
+
+  $ x_1 a_1 + dots + x_p a_p = b $
+  Case I: $a_1, dots, a_p$ are linearly independent
+  - If $p = m$, then $x$ is basic
+  - If $p < m$, since $"rank"A = m$, we can extend $a_1, dots, a_p$ to a basis, so $x$ is basic.
+  Case II: $a_1, dots, a_p$ are linearly dependent
+  $ y_1 a_1 + dots + y_p a_p = 0, exists y_i > 0 $
+
+  $y = (y_1, dots, y_p, 0, dots, 0), A y = 0, A (x - epsilon y) = b$
+
+  $epsilon = min{x_i / y_i : y_i > 0}$, $x - epsilon y$ is feasible with $p - 1$ positive components. Repeat this process until we get back to Case I.
+]
+#proof[Proof of 2][
+
+  $x = (x_1 , dots, x_p, 0, dots, 0)$ is optimal. We can construct an optimal BFS as follows.
+
+  Case I: $a_1, dots, a_p$ are linearly independent
+
+  Similar to proof of 1, $x$ is basic, so $x$ is an optimal BFS.
+
+  Case II: $a_1, dots, a_p$ are linearly dependent
+
+  We use the same process as in proof of 1. We only need to show that $x - epsilon y$ is also optimal.
+
+  The objective function has value
+  $ c^T (x - epsilon y) = c^T x - epsilon c^T y $
+  Suppose $c^T y != 0$.
+  For $abs(epsilon) < min {x_i / abs(y_i) : y_i != 0}$, $x - epsilon y$ is feasible.
+
+  By choosing the sign of $epsilon$, we can have $c^T (x - epsilon y) < c^T y$, contradicting $x$ is optimal.
+
+  So $c^T y = 0, c^T (x - epsilon y) = c^T x$, $x - epsilon y$ is optimal.
+
+  Repeat this process until we get back to Case I.
+
+
+]
+== Simplex Method
+#strategy[Simplex Method][
+
+  $
+    min_x f = -3x_1 + 2x_2
+  $
+  $
+    cases(
+      x_1 + x_2 + x_3 = 4,
+      2x_1 + x_2 + x_4 = 5,
+      x_1 comma x_2 comma x_3 comma x_4 >= 0
+    )
+  $
+
+  #align(center)[
+    #table(
+      columns: 7,
+      align: center,
+      inset: 6pt,
+      stroke: none,
+      [BV], [$x_1$], [$x_2$], [$x_3$], [$x_4$], [RHS], [ratio],
+      table.hline(y: 1, stroke: 0.7pt + black),
+      table.hline(y: 2, stroke: 0.7pt + black),
+      [$f$], [3], [-2], [0], [0], [0], [],
+      [$x_3$], [1], [1], [1], [0], [4], [4],
+      [$x_4$], [2], [1], [0], [1], [5], [2.5],
+      table.vline(x: 1, stroke: 0.7pt + black),
+      table.vline(x: 5, stroke: 0.7pt + black),
+      table.vline(x: 6, stroke: 0.7pt + black),
+    )
+  ]
+
+  *1. Entering Variable*
+
+  A non-basic variable ($x_1$) with a positive coefficient in the $f$ row enters the basis.
+
+  *2. Leaving Variable*
+
+  Compute the ratio of rows with positive coefficients.
+
+  If all coefficients are nonpositive, the problem is unbounded below.
+
+  The basic variable ($x_4$) with the smallest ratio leaves the basis.
+
+
+  *3. Pivot Operation*
+
+  Perform Gauss-Jordan elimination:
+
+  #align(center)[
+    #table(
+      columns: 6,
+      align: center,
+      inset: 6pt,
+      stroke: none,
+      [BV], [$x_1$], [$x_2$], [$x_3$], [$x_4$], [RHS],
+      table.hline(y: 1, stroke: 0.7pt + black),
+      table.hline(y: 2, stroke: 0.7pt + black),
+      [$f$], [0], [-7/2], [0], [-3/2], [-15/2],
+      [$x_3$], [0], [1/2], [1], [-1/2], [3/2],
+      [$x_1$], [1], [1/2], [0], [1/2], [5/2],
+      table.vline(x: 1, stroke: 0.7pt + black),
+      table.vline(x: 5, stroke: 0.7pt + black),
+    )
+  ]
+
+  *4. Optimal Solution*
+
+  Repeat step 1, 2, 3 until all coefficients in the $f$ row are negative.
+
+
+  $
+    (x_1^*, x_2^*, x_3^*, x_4^*) = (5/2, 0, 3/2, 0)
+  $
+
+
+  $
+    f_min = -15/2
+  $
+]
+#strategy[Bland's Anticycling Rule][
+
+  When picking entering variables and leaving variables, pick the variable with the smallest index that satisfies the conditions.
+]
+
+#strategy[Two Phase Method][
+
+
+  For a general LP (L) with constraints
+  $ A x = b, x >= 0 $
+
+  Multiply some rows by $-1$ to guarantee $b >= 0$
+
+  To get an initial BFS, we solve an auxiliary problem (F)
+  $ min_x 1^T y $
+  $ mat(A, I) mat(x; y) = b $
+  $ mat(x; y) >= 0 $
+  from BFS $(0, b)$ to get an optimal BFS $(x, 0)$.
+
+  Then we solve (L) starting from BFS $x$.
+]
+== QP, QCQP, GP
+#definition[Quadratic Program][QP][
+  $ min_x 1/2 x^T Q x + c^T x $
+  $ B x <= d $
+  $ A x = b $
+  QP is convex iff $Q succ.eq 0$
+]
+#definition[Quadratic Constrained Quadratic Program][QCQP][
+  $ min_x 1/2 x^T Q x + c^T x $
+  $ 1/2 x^T Q_i x + c_i^T x + d_i <= 0, i = 1, 2, dots, m $
+  $ A x = b $
+  QCQP is convex iff $Q succ.eq 0, Q_i succ.eq 0$
+]
+#proposition[General Unconstrained QP][
+  $ min_x f(x) = 1/2 x^T Q x + b^T x + c $
+  $ nabla f(x) = Q x + b = 0 $
+  + $Q succ 0$: unique solution $x^* = - Q^(-1) b$
+  + $det Q = 0, b in "Range"(Q)$: infinitely many solutions
+  + $det Q = 0, b in.not "Range"(Q)$: no solution, $f^* = -infinity$
+]
+
