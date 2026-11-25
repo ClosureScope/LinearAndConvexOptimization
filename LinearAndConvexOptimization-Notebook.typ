@@ -744,7 +744,7 @@ All norms are Euclidean norm in this section.
 #theorem[First-Order Condition for Strict Convexity][
 
   A differentiable $f$ with an open convex domain $"dom"f$ is strictly convex iff
-  $ f(y) > f(x) + nabla f(x)^T (y - x) , forall x, y in "dom"f $
+  $ f(y) > f(x) + nabla f(x)^T (y - x) , forall x != y $
 
 ]
 
@@ -1294,3 +1294,225 @@ All norms are Euclidean norm in this section.
   + $det Q = 0, b in.not "Range"(Q)$: no solution, $f^* = -infinity$
 ]
 
+#definition[Monomial][
+
+  $f: RR^n_(+ +) = {x in RR^n : x > 0} -> RR, gamma > 0$
+  $ f(x) = gamma x_1^a_1 x_2^a_2 dots x_n^a_n $
+]
+#definition[Posynomial][
+
+  A posynomial is a sum of monomials
+  $ f(x) = sum_(k=1)^p gamma_k x_1^a_(k 1) dots x_n^a_(k n) $
+]
+
+#definition[Geometric Program][GP][
+  $ min_x f(x) $
+  $ g_i (x) <= 1, i = 1, dots, m $
+  $ h_j (x) = 1, j = 1, dots, r $
+  $f, g_i$ are posynomials and $h_j$ are monomials. The constraint $x > 0$ is implicit.
+]
+
+=
+== Gradient Descent
+#definition[Descent Direction][
+
+  $d_k$ is a descent direction at $x_k$ if for all small enough $t > 0$
+  $ g(t) =^Delta f(x_k + t d_k) < f (x_k) = g(0) $
+]
+#proposition[][
+
+  For differentiable $f$,
+
+  $d_k$ is a descent direction $=> d_k^T nabla f(x_k) <= 0$
+
+  $d_k^T nabla f(x_k) < 0 => d_k$ is a descent direction
+
+  For convex differentiable $f$,
+
+  $d_k$ is a descent direction $<=> d_k^T nabla f(x_k) < 0$
+]
+#strategy[Gradient Descent Algorithm][
+
+  while $norm(nabla f (x)) > delta$ do
+
+  #h(2em) $x <- x - eta nabla f(x)$
+
+  end while
+
+  return x
+]
+
+#definition[Lipschitz Continuity][
+
+  $L > 0$, $f$ is Lipschitz continuous or $L$-Lipschitz if
+  $ norm(f(x) - f(y)) <= L norm(x - y) $
+]
+
+#note[][Lipschitz continuity implies uniform continuity.]
+#proposition[First-Order Condition for $L$-Lipschitz][
+
+  A differentiable $f$ is $L$-Lipschitz iff $norm(nabla f(x)) <=L$
+]
+
+#definition[$L$-smoothness][
+
+  $f$ is L-smooth if it is differentiable and its gradient is L-Lipschitz
+  $ norm(nabla f(x) - nabla f(y)) <= L norm(x - y) $
+]
+#proposition[Second-Order Condition for $L$-smoothness][
+
+  A twice continuously differentiable $f$ is $L$-smooth iff $forall x, - L I prec.eq nabla^2 f(x) prec.eq L I$ or equivalently $abs(lambda) <= L$ for all eigenvalues $lambda$ of $nabla^2 f(x)$
+]
+#proposition[$L$-smoothness $=>$ Quadratic Upper Bound][
+
+  If $f$ is $L$-smooth
+  $ f(y) <= f(x) + nabla f(x)^T (y - x) + L/2 norm(y -x)^2 $
+]
+#proof[][
+
+  First prove the 1D case. Let $g$ be $L_g$-smooth
+  $
+    g(1) & = g(0) + integral_0^1 g'(t) d t \
+         & = g(0) + g'(0) + integral_0^1 [g'(t) - g'(0)] d t \
+         & <= g(0) + g'(0) + integral_0^1 L t d t = g(0) + g'(0) + 1/2 L
+  $
+
+  For the general case, let $g(t) = f(x + t d), d = y - x, L_g = L norm(d)^2$
+
+  To check the $L_g$-smoothness of $g$
+  $
+    abs(g'(t) - g'(s)) & = abs([nabla f(x+t d) - nabla f(x + s d)]^T d) \
+                       & <= norm(nabla f(x+t d) - nabla f(x + s d)) dot norm(d) \
+                       & <= abs(t - s) L norm(d)^2
+  $
+]
+
+#lemma[Descent Lemma][
+
+  For $L$-smooth $f$, the sequence ${x_k}$ produced by gradient descent satisfies
+  $ f(x_(k+1)) <= f(x_k) - eta (1 - (L eta)/2) norm(nabla f(x_k))^2 $
+]
+#proof[][
+
+  Simply plug in $x = x_k, y = x_(k+1) = x_k - eta nabla f(x_k)$ in the quadratic upper bound.
+]
+#note[][
+
+  If $nabla f(x_k) != 0, 0 < eta < 2 / L$, then $f(x_(k+1)) < f(x_k)$ i.e. gradient descent is a descent method.]
+#corollary[Descent Lemma][
+
+  $f$ is $L$-smooth, $0 < eta <= 1/L$
+  $ f(x_k) - f(x_(k + 1)) >= eta / 2 norm(nabla f(x_k))^2 $
+]
+#theorem[Convergence Analysis][
+
+  If $f$ is convex and $L$-smooth, $eta in (0, 1/L]$, the sequence ${x_k}$ produced by the gradient descent algorithm satisfies
+  $ f(x_k) - f(x^*) <= norm(x_0 - x^*)^2 / (2 eta k) $
+]
+
+#proof[][
+  $
+    norm(x_(k+1) - x^*)^2 - norm(x_k - x^*)^2 & = norm(x_k - eta nabla f(x_k) - x^*)^2 - norm(x_k - x^*)^2 \
+                                              & = 2 eta nabla f(x_k)^T (x^* - x_k) + eta^2 norm(nabla f(x_k))^2
+  $
+  By convexity,
+  $ 2 eta nabla f(x_k)^T (x^* - x_k) <= 2 eta [f(x^*) - f(x_k)] $
+  By descent lemma,
+  $ eta^2 norm(nabla f(x_k))^2 <= 2 eta [f(x_k) - f(x_(k+1))] $
+  Plugging in,
+  $ norm(x_(k+1) - x^*)^2 - norm(x_k - x^*)^2 <= 2 eta [f(x^*) - f(x_(k + 1))] $
+  Summing over $k$,
+  $ norm(x_N - x^*)^2 - norm(x_0 - x^*)^2 <= 2 eta sum_(k=0)^(N-1) [f(x^*) - f(x_(k+1))] $
+  By descent lemma, $f(x_(k+1)) <= f(x_k)$
+  $ norm(x_N - x^*)^2 - norm(x_0 - x^*)^2 <= 2 eta N [f(x^*) - f(x_N)] $
+  So
+  $ f(x_N) - f(x^*) <= norm(x_0 - x^*)^2 / (2 eta N) $
+]
+
+
+== Strong Convexity and Condition Number
+#definition[Strong Convexity][
+
+  $f$ is $m$-strongly convex if
+  $ tilde(f)(x) = f(x) - m/2 norm(x)^2 $
+  is convex
+]
+
+#note[][strong convexity $=>$ strict convexity $=>$ convexity]
+
+#proposition[First-Order Condition for Strong Convexity][
+
+  A differentiable $f$ is $m$-strongly convex iff
+  $ f(y) >= f(x) + nabla f(x)^T (y-x) + m/2 norm(x-y)^2, forall x, y $
+]
+#proof[][
+  $ tilde(f)(x) = f(x) - m/2 norm(x)^2 $
+  $ nabla tilde(f) (x) = nabla f(x) - m x $
+  Check first-order condition for convexity,
+  $
+    & tilde(f)(y) - tilde(f)(x) - nabla tilde(f)(x)^T (y - x) \
+    & = (f(y) - m/2 norm(y)^2 ) - (f(x) - m/2 norm(x)^2) - (nabla f(x) - m x)^T (y-x) \
+    & = f(y) - f(x) - nabla f(x)^T (y-x) - m/2 (norm(y)^2 - norm(x)^2 - 2 x^T (y-x)) \
+    & = f(y) - f(x) - nabla f(x)^T (y-x) - m/2 norm(x-y)^2
+  $
+]
+#proposition[Second-Order Condition for Strong Convexity][
+
+  A twice continuously differentiable $f$ is $m$-strongly convex iff
+  $ nabla^2 f(x) succ.eq m I, forall x $
+  or equivalently
+  $ lambda_min (nabla^2 f(x)) >= m, forall x $
+]
+#proof[][
+  Check second-order condition for convexity,
+  $nabla^2 tilde(f)(x) = nabla^2 f(x) - m I succ.eq 0$
+]
+
+#proposition[Bound on Suboptimality Gap][
+
+  $f$ is $m$-strongly convex
+  $ f(x) - f(x^*) <= 1/(2m) norm(nabla f (x))^2 $
+]
+#proof[][
+
+  By the first-order condition for strong convexity,
+  $ f(y) >= f(x) + nabla f(x)^T (y - x) + m/2 norm(y - x)^2 $
+  $ min_y f(y) >= min_y [f(x) + nabla f(x)^T (y - x) + m/2 norm(y - x)^2] $
+  $ f(x^*) >= f(x) - 1/(2 m) norm(nabla f (x))^2 $
+]
+#theorem[Convergence Analysis][
+
+  $f$ is $m$-strongly convex and $L$-smooth, $eta in (0, 1/L]$, the sequence ${x_k}$ produced by the gradient descent algorithm satisfies
+  $ f(x_k) - f(x^*) <= (1-m eta)^k [f(x_0) - f(x^*)] $
+  $ norm(x_k - x^*)^2 <= (1 - m eta)^k norm(x_0 - x^*)^2 $
+]
+#proof[][
+
+  By descent lemma,
+  $ f(x_k) - f(x_(k+1)) >= eta/2 norm(nabla f(x_k))^2 $
+  By bound on suboptimality gap,
+  $ f(x_k) - f(x^*) <= 1/(2m) norm(nabla f (x_k))^2 $
+  Eliminate $norm(nabla f(x_k))$
+  $ f(x_(k+1)) - f(x^*) <= (1 - m eta) [f(x_k) - f(x^*)] $
+  $ f(x_k) - f(x^*) <= (1-m eta)^k [f(x_0) - f(x^*)] $
+]
+#proof[][
+  $
+    norm(x_(k+1) - x^*)^2 - norm(x_k - x^*)^2 & = norm(x_k - eta nabla f(x_k) - x^*)^2 - norm(x_k - x^*)^2 \
+                                              & = 2 eta nabla f(x_k)^T (x^* - x_k) + eta^2 norm(nabla f(x_k))^2
+  $
+  By $m$-strong convexity,
+  $ 2 eta nabla f(x_k)^T (x^* - x_k) <= 2 eta [f(x^*) - f(x_k) - m/2 norm(x_k - x^*)^2] $
+  By descent lemma,
+  $ eta^2 norm(nabla f(x_k))^2 <= 2 eta [f(x_k) - f(x_(k+1))] $
+  Plugging in,
+  $ norm(x_(k+1) - x^*)^2 <= (1-m eta)norm(x_k - x^*)^2 + 2 eta [f(x^*) - f(x_(k + 1))] $
+  Since $f(x^*) <= f(x_(k+1))$
+  $ norm(x_(k+1) - x^*)^2 <= (1-m eta)norm(x_k - x^*)^2 $
+  $ norm(x_k - x^*)^2 <= (1 - m eta)^k norm(x_0 - x^*)^2 $
+]
+#definition[Condition Number][
+
+  $Q succ 0$
+  $ kappa(Q) = (lambda_max (Q)) / (lambda_min (Q)) $
+]
